@@ -191,3 +191,94 @@ Paginaction of flatlist ########################################################
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+##################### paginactionData file  ###################################)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+
+file next functionof Api START   make file
+  export const paginactionData=async(page)=>{
+  try {
+      let response=await axios.get(`https://randomuser.me/api/?page=${page}&results=5&seed=abc`)
+          return response?.data?.results
+      // console.log(response?.data?.results)
+  } catch (error) {
+    console.log('err',error)
+  }
+}
+ // othet page data ^^^^^^^^^^^^^^^^^^^^^^^^^^^^####################################
+file next functionof Api END
+
+
+
+
+const [data, setData] = useState([]);
+const [loading, setLoading] = useState(true);
+const [currentPage,setCrrentPage]=useState(1)
+
+
+useEffect(()=>{
+    const initailPaginaction=async()=>{
+      setLoading(true)
+      let data=await paginactionData(currentPage)
+      setData(data)
+        setLoading(false)
+    }
+    initailPaginaction()
+},[])
+
+
+const fetchMore=async()=>{
+  if(loading) return;
+  setLoading(true)
+  const nextpage=currentPage +1;
+  let userList=await paginactionData(currentPage)
+  setData([...data,...userList])
+  setCrrentPage(nextpage)
+  setLoading(false)
+}
+
+
+
+
+
+
+<FlatList
+  data={data}
+  renderItem={({item}) => <UserCard user={item} />}
+  keyExtractor={item => Math.random().toString(36).substring(2)}
+  onEndReached={fetchMore}
+  onEndReachedThreshold={0.5}
+  ListFooterComponent={() => {
+    loading ? (
+      <ActivityIndicator
+        style={{marginVertical: 20}}
+        size={'large'}
+        color={'red'}
+      />
+    ) : null;
+  }}
+/>;
+
+
+############################# paginactionData  ###########################)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+  
